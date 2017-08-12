@@ -1,0 +1,1 @@
+REG ADD HKCU\Software\Adobe\CSXS.7 /v PlayerDebugMode /t REG_DWORD /d 1
