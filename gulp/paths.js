@@ -9,7 +9,7 @@ module.exports = {
     baseRoot: baseRoot,
     js: appRoot + 'js/**/*.js',
     jsx: baseRoot + 'jsx/**/*.jsx',
-    html: baseRoot + '*.html',
+    html: baseRoot + appRoot + 'html/*.html',
     css: appRoot + '**/*.css',
     less: appRoot + '/**/*.less',
     sass: appRoot + '/**/*.scss',
@@ -18,7 +18,7 @@ module.exports = {
     configjs: "config.js",
     doc: './doc',
     premiereTrigger: './.premiere_refresh_trigger',
-    premiereDebug: appRoot + './debug',
+    premiereDebug: appRoot + './.debug',
     devSymlinks: [
         appRoot + 'CSXS',
         appRoot + 'fonts',

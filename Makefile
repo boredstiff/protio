@@ -30,7 +30,7 @@ build:
 install:
 	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" 2>/dev/null || true
 	cmd /c mklink /J "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" "$(shell cygpath -w $(DIST_DIR))"
-	gulp watch
+	gulp build-dev
 
 uninstall:
 	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" 2>/dev/null || true

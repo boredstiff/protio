@@ -18,7 +18,7 @@
         <Extension Id="OpenTimeline.IO">
             <DispatchInfo>
                 <Resources>
-                    <MainPath>./index.html</MainPath>
+                    <MainPath>./opentimelineio.html</MainPath>
                     <ScriptPath>./jsx/opentimeline.jsx</ScriptPath>
                     <CEFCommandLine>
                         <Parameter>--enable-nodejs</Parameter>
