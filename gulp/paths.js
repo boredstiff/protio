@@ -1,5 +1,3 @@
-var path = require('path')
-
 var appRoot = 'src/'
 var outputRoot = 'dist'
 var baseRoot = './'

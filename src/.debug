@@ -2,7 +2,7 @@
 <ExtensionList>
     <Extension Id="OpenTimeline.IO">
         <HostList>
-            <Host Name="PPRO" Port="6666"/>
+            <Host Name="PPRO" Port="6145"/>
         </HostList>
     </Extension>
-</ExtensionList
+</ExtensionList>

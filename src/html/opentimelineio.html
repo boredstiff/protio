@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Hello, OpenTimelineIO</title>
+
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <!-- Must use modified version of jquery or we get require error -->
+    <script src="./lib/jquery-1.9.1.js"></script>
+    <script src="./lib/CSInterface.js"></script>
+
 </head>
 <body>
+    <!-- GULP: DEV -->
+    <script src="jspm_packages/system.js"></script>
+    <script src="config.js"></script>
+    <script type="text/javascript">
+        System.import('opentimelineio')
+    </script>
+    <!-- GULP: ENDDEV -->
 
+Hello, world
 </body>
 </html>
