@@ -19,6 +19,8 @@ System.config({
     "core-js": "npm:core-js@1.2.7",
     "loglevel": "github:pimterry/loglevel@1.4.1",
     "path": "github:jspm/nodelibs-path@0.2.3",
+    "process": "github:jspm/nodelibs-process@0.1.2",
+    "shell-quote": "npm:shell-quote@1.6.1",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },
@@ -66,6 +68,12 @@ System.config({
       "assert": "github:jspm/nodelibs-assert@0.1.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "vm": "github:jspm/nodelibs-vm@0.1.0"
+    },
+    "npm:shell-quote@1.6.1": {
+      "array-filter": "npm:array-filter@0.0.1",
+      "array-map": "npm:array-map@0.0.0",
+      "array-reduce": "npm:array-reduce@0.0.0",
+      "jsonify": "npm:jsonify@0.0.0"
     },
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",

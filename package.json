@@ -22,7 +22,6 @@
     "gulp-replace": "0.6.1",
     "gulp-sass": "3.1.0",
     "jspm": "0.16.31",
-    "path": "0.12.7",
     "require-dir": "0.3.2",
     "run-sequence": "2.1.0",
     "shell-quote": "1.6.1",
@@ -34,7 +33,10 @@
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4",
-      "loglevel": "github:pimterry/loglevel@1.4.1"
+      "loglevel": "github:pimterry/loglevel@1.4.1",
+      "path": "github:jspm/nodelibs-path@0.2.3",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "shell-quote": "npm:shell-quote@1.6.1"
     }
   }
 }
