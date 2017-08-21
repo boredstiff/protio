@@ -19,8 +19,17 @@ export class App {
             log.error(err)
         }
     }
+
+    evalScript(command) {
+        log.debug('Evalscript command: ', command)
+        return new Promise(function(resolve, reject) {
+            var cs = new CSInterface()
+            return cs.evalScript(command, resolve)
+        })
+    }
+
     loadJSX() {
-        // log.debug('Loading JSX')
+        log.info('Loading JSX')
         let cs = new CSInterface()
         let extensionRoot = cs.getSystemPath(SystemPath.EXTENSION) + '/jsx/'
         cs.evalScript('$.openTimelineIOTools.evalFiles("' + extensionRoot + '")')
@@ -34,27 +43,101 @@ export class App {
             window.open(url, '_blank')
         }
     }
+
     runPython(args, stdout, stderr) {
-        let self = this
         console.log('starting runPython')
-        return new Promise(function(resolve, reject) {
-            console.log('inside runPython promise')
-            let cs = new CSInterface()
-            let os = cs.getOSInformation()
-            let find_python
-            if (os.indexOf('Windows') >= 0) {
-                find_python = ['which', 'python']
-            } else {
-                find_python = ['where', 'python']
+
+        function read(procID, stream, _array, callback) {
+            console.log('reading...')
+            let watch = true
+            let data_function = function (data) {
+                if (data !== null) {
+                    let lines = data.split('\n').filter(function(n) { return n !== ''})
+                    console.log('pushing: ', lines)
+                    console.log('array: ', _array)
+                    _array.push.apply(_array, lines)
+                    if (callback) { callback(lines) }
+                }
+                if (!watch) { return }
+                window.cep.process[stream](procID, this.bind(this))
             }
-            console.log('before shellquote', find_python)
-            let find_python_str = shellquote.quote(find_python)
-            console.log('after shellquote', find_python_str)
-            let python_path = window.cep.process.createProcess(find_python_str)
 
-            console.log('python_path: ', python_path)
+            data_function.bind(data_function)()
+            return { stop: function() { watch = false }}
+        }
 
+        return new Promise(function(resolve, reject) {
+            if (window.cep) {
+                console.log('inside runPython promise')
+                let cs = new CSInterface()
+                let os = cs.getOSInformation()
+                let find_python, bash, python
+                if (os.indexOf('Windows') >= 0) {
+                    // bash = "C:/Users/alexw/.babun/cygwin/bin/bash.exe"
+                    cmd = "C:/Windows/System32/cmd.exe"
+                    python = "C:/virtualenvs/otio/Scripts/python.exe"
+                }
+                // let pyArgs = [python, '-u'].concat(args)
+                let pyArgs = [python, '-u'].concat(args)
+                let _args = shellquote.quote(pyArgs)
+                console.log('Python command: ', _args)
+                // let fullArgs = [bash, '-lc', 'ls']
+                let fullArgs = [cmd].concat(_args)
+                console.log('Full command: ', fullArgs)
+                let proc = window.cep.process.createProcess.apply(this, fullArgs)
+                let procID = proc.data
+                console.log('procID: ', procID)
+                let stdoutLines = []
+                let stderrLines = []
+                let stdoutWatch, stderrWatch
 
+                if (stdout) {
+                    console.log('stdout: going to read: ', stdout)
+                    stdoutWatch = read(procID, 'stdout', stdoutLines, stdout)
+                } else {
+                    console.log(stdout)
+                    console.log('else on stdout')
+                    window.cep.process.stdout(procID, function(line) { stdoutLines.push(line); console.log('stdOutLines: ', stdoutLines) })
+                }
+
+                if (stderr) {
+                    console.log('stderr: going to read: ', stderr)
+                    stderrWatch = read(procID, 'stderr', stderrLines, stderr)
+                } else {
+                    console.log('else on stderr')
+                    window.cep.process.stderr(procID, function(line) { stderrLines.push(line) })
+                }
+
+                function wait() {
+                    console.log('waiting')
+                    if (!proc.data) {
+                        setTimeout(wait, 100)
+                    } else {
+                        console.log('inside else of wait')
+                        let data = {
+                            proc: proc,
+                            stdout: stdoutLines.join('\n'),
+                            stderr: stderrLines.join('\n')
+                        }
+                        if (stdoutWatch) { console.log('stdoutWatchStop'); stdoutWatch.stop() }
+                        if (stderrWatch) { console.log('stderrWatchStop'); stderrWatch.stop() }
+                        console.log('proc.err ', proc.err)
+                        if (proc.err === 0) {
+                            console.log('should be resolving')
+                            console.log(resolve)
+                            console.log('data: ', data)
+                            resolve(data)
+                        } else {
+                            console.log('rejecting')
+                            reject(data)
+                        }
+                    }
+                }
+                window.cep.process.onquit(procID, wait)
+            } else {
+                console.log('else at end of runPython')
+                resolve('', '')
+            }
         })
     }
 

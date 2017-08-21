@@ -11,12 +11,32 @@ $.OpenTimelineIOTools = {
          * You can move the file afterward, but Premiere will not export
          * this file to a server path.
          */
-        let seq = app.project.activeSequence
+        var seq = app.project.activeSequence;
+        $.writeln('seq');
         if (seq !== null) {
+            $.writeln('seq is not null, should export to ', path);
             // 1 says to suppress the UI
-            seq.exportAsFinalCutProXML(path, 1)
+            seq.exportAsFinalCutProXML(path, 1);
         } else {
-            alert('No active sequence')
+            alert('No active sequence');
         }
     },
+
+    chooseOTIOExportLocation : function() {
+        var myFile = new File('~/Desktop').saveDlg('Export OpenTimelineIO file');
+        if (!myFile) {
+            return;
+        } else {
+            return myFile.fsName;
+        }
+    },
+
+    selectOTIOFileToImport : function() {
+        var myFile = new File('~/Desktop').openDlg('Select OpenTimelineIO file to import')
+        if (!myFile) {
+            return;
+        } else {
+            return myFile.fsName;
+        }
+    }
 };

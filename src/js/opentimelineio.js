@@ -16,7 +16,6 @@ export class OpenTimelineIO {
     init() {
         log.info('init run')
         $('#export-btn').click(function() {
-            log.info('Hello button press')
             this.exportOpenTimelineIO()
         }.bind(this))
     }
@@ -31,8 +30,16 @@ export class OpenTimelineIO {
         return this.app.evalScript('app.project.activeSequence.name')
     }
 
-    exportActiveSequenceAsFCP7XML() {
-        return this.app.evalScript('$.OpenTimelineIOTools.exportActiveSequenceAsFCP7XML')
+    exportActiveSequenceAsFCP7XML(path) {
+        return this.app.evalScript('$.OpenTimelineIOTools.exportActiveSequenceAsFCP7XML("' + path + '")')
+    }
+
+    chooseExportLocation() {
+        return this.app.evalScript('$.OpenTimelineIOTools.chooseOTIOExportLocation()')
+    }
+
+    importFile() {
+        return this.app.evalScript('$.OpenTimelineIOTools.selectOTIOFile()')
     }
 
     getTempFolder() {
@@ -52,27 +59,33 @@ export class OpenTimelineIO {
 
     generateTempPath() {
         let now = new Date()
-        log.info(now)
         let folderPath = this.getTempFolder()
-        log.info(folderPath)
         let fileName = [now.getYear(), now.getMonth(), now.getDate(), '-', process.pid, '-', (Math.random() * 0x100000000 + 1).toString(36), '.xml'].join('')
-        log.info(fileName)
-        let finalName = path.join(folderPath, fileName)
-        log.info(finalName)
-        return finalName
+        return path.join(folderPath, fileName)
     }
 
     exportOpenTimelineIO() {
         // Get the export location
-        return new Promise(function(resolve, reject) {
-            console.log('started promise')
-            let tempPath = this.generateTempPath()
-            console.log('tempPath inside exportOpenTimelineIO', tempPath)
-            return this.app.runPython()
-                .then(function() {
-                    console.log('inside function after calling runPython')
-                }.bind(this))
-        }.bind(this))
+        return this.chooseExportLocation()
+            .then(function(data) {
+                // 'data' coming in should be a full path selected by the user.
+                // TODO: Some validation on this path in here. 
+                // Is it possible for the UI to hand back a folder path?
+                // Need to also populate with '.otio' if it doesn't exist.
+                let temp_path = this.generateTempPath()
+                // Then export final cut pro xml with the temp path
+                return this.exportActiveSequenceAsFCP7XML(temp_path)
+                    .then(function() {
+                        console.log('Sequence should be exported, calling python')
+                        // Then run conversion on the temp path file to the user-selected
+                        // output path
+                        let python_args = ['export-file', '--input', temp_path, '--output', data]
+                        return this.app.runPython(python_args)
+                            .then(function(python_output) {
+                                console.log('Python output: ', python_output)
+                            })
+                    }.bind(this))
+            }.bind(this))
     }
 }
 
