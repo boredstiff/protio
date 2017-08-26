@@ -2,6 +2,7 @@ console.log('starting app imports')
 // const log = require('loglevel')
 import * as log from 'loglevel'
 import * as shellquote from 'shell-quote'
+
 // let vs = require('fs')
 // let path = require('path')
 
@@ -11,13 +12,17 @@ log.setLevel(0)
 export class App {
     constructor() {
         // log.debug('Building application')
-
         try {
             log.info('loading')
             this.loadJSX()
         } catch (err) {
             log.error(err)
         }
+
+        var cs = new CSInterface()
+        this.extensionPath = cs.getSystemPath(SystemPath.EXTENSION)
+        // This one should already be normalized.
+        this.pythonScriptPath = [this.extensionPath, 'python', 'premiere-opentimelineio.py'].join('/').replace('\\', '/')
     }
 
     evalScript(command) {
@@ -26,6 +31,13 @@ export class App {
             var cs = new CSInterface()
             return cs.evalScript(command, resolve)
         })
+    }
+
+    normalizePath(path) {
+        log.debug('Inside normalizePath before running the replace: ', path)
+        path = path.replace(/[\\/]+/g, '/');
+        log.debug('After running the replace: ', path)
+        return path
     }
 
     loadJSX() {
@@ -73,16 +85,16 @@ export class App {
                 let os = cs.getOSInformation()
                 let find_python, bash, python
                 if (os.indexOf('Windows') >= 0) {
-                    bash = "C:/Users/alexw/.babun/cygwin/bin/bash.exe"
+                    bash = this.normalizePath("C:/Users/alexw/.babun/cygwin/bin/bash.exe")
                     // cmd = "C:/Windows/System32/cmd.exe"
-                    python = "C:/virtualenvs/otio/Scripts/python.exe"
+                    python = this.normalizePath("C:/virtualenvs/otio/Scripts/python.exe")
                 }
                 // let pyArgs = [python, '-u'].concat(args)
-                let pyArgs = [python, '-u'].concat(args)
+                let pyArgs = [python, '-u', this.pythonScriptPath].concat(args)
                 let _args = shellquote.quote(pyArgs)
                 console.log('Python command: ', _args)
                 // let fullArgs = [bash, '-lc', 'ls']
-                let fullArgs = [bash, '-lc', python].concat(_args)
+                let fullArgs = [bash, '-lc'].concat(_args)
                 console.log('Full command: ', fullArgs)
                 let proc = window.cep.process.createProcess.apply(this, fullArgs)
                 let procID = proc.data
@@ -138,7 +150,7 @@ export class App {
                 console.log('else at end of runPython')
                 resolve('', '')
             }
-        })
+        }.bind(this))
     }
 
 }

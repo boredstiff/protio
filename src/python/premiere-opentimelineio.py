@@ -5,7 +5,7 @@ import os
 import sys
 
 try:
-    import opentimelineio
+    import opentimelineio as otio
 except ImportError:
     raise SystemExit('It appears OpenTimelineIO is not installed on the selected Python interpreter. As such, '
         'I cannot really run anything, so fix it.')
@@ -46,17 +46,23 @@ class OTIOTools(object):
 
         parser.set_defaults(func=self.export_file)
     
-    def export_file(self, **kwargs):
+    def export_file(self, kwargs):
         input_path = kwargs.get('input')
         output_path = kwargs.get('output')
 
-        print input_path
+        print('INPUT_PATH: {0}'.format(input_path))
+        print('OUTPUT_PATH: {0}'.format(output_path))
+
+        timeline = otio.adapters.read_from_file(input_path)
+        otio.adapters.write_to_file(timeline, output_path)
+
+        print(input_path)
         return input_path
 
 
 def main(args, exit=False):
-    OTIOTools = OTIOTools()
-    exitCode = OTIOTools.parse(args[1:])
+    tools = OTIOTools()
+    exitCode = tools.parse(args[1:])
     if exit:
         sys.exit(exitCode)
     return exitCode

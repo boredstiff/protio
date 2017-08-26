@@ -79,7 +79,19 @@ export class OpenTimelineIO {
                         console.log('Sequence should be exported, calling python')
                         // Then run conversion on the temp path file to the user-selected
                         // output path
-                        let python_args = ['export-file', '--input', temp_path, '--output', data]
+                        console.log('before ')
+                        let t_path = this.app.normalizePath(temp_path)
+                        console.log('t_path: ', t_path)
+
+                        let python_args = [
+                            'export-file',
+                            '--input',
+                            this.app.normalizePath(temp_path),
+                            '--output',
+                            this.app.normalizePath(data)
+                        ]
+
+                        log.debug('Export Python arguments before calling: ', python_args)
                         return this.app.runPython(python_args)
                             .then(function(python_output) {
                                 console.log('Python output: ', python_output)
