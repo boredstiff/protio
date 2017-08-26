@@ -6,9 +6,7 @@ if(typeof($) == 'undefined')
 $.OpenTimelineIOTools = {
 
     evalFile : function(path) {
-        $.writeln('fucking evalFile: ', path);
         try {
-            $.writeln('Trying to evaluate: ', path);
             $.evalFile(path);
         } catch(err) {
             alert("Eval File Exception: " + err);
@@ -16,7 +14,6 @@ $.OpenTimelineIOTools = {
     },
 
     evalFiles: function(jsxFolderPath) {
-        $.writeln('jsxFolderPath: ', jsxFolderPath);
         var folder = new Folder(jsxFolderPath);
         if (folder.exists) {
             var jsxFiles = folder.getFiles("*.jsx");
@@ -38,12 +35,27 @@ $.OpenTimelineIOTools = {
         var seq = app.project.activeSequence;
         $.writeln('seq');
         if (seq !== null) {
-            $.writeln('seq is not null, should export to ', path);
             // 1 says to suppress the UI
             seq.exportAsFinalCutProXML(path, 1);
         } else {
             alert('No active sequence');
         }
+    },
+
+    // importSequence : function(path) {
+    //     $.writeln('Sequence to import: ' + path);
+    //     if (path !== null) {
+    //         $.writeln('Here we go');
+    //         try {
+    //             var result = app.project.importSequence(path);
+    //             $.writeln(result);
+    //         } catch(err) {alert('Error Importing: ' + err);}
+    //     }
+    // },
+
+    importSequence : function(path) {
+        // $.writeln('hello');
+        $.writeln('path');
     },
 
     chooseOTIOExportLocation : function() {
@@ -56,11 +68,11 @@ $.OpenTimelineIOTools = {
     },
 
     selectOTIOFileToImport : function() {
-        var myFile = new File('~/Desktop').openDlg('Select OpenTimelineIO file to import')
+        var myFile = new File('~/Desktop').openDlg('Select OpenTimelineIO file to import');
         if (!myFile) {
             return;
         } else {
             return myFile.fsName;
         }
-    }
+    },
 };

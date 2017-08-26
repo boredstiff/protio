@@ -18,6 +18,10 @@ export class OpenTimelineIO {
         $('#export-btn').click(function() {
             this.exportOpenTimelineIO()
         }.bind(this))
+
+        $('#import-btn').click(function() {
+            this.importOpenTimelineIO()
+        }.bind(this))
     }
 
     getActiveSequence() {
@@ -38,8 +42,13 @@ export class OpenTimelineIO {
         return this.app.evalScript('$.OpenTimelineIOTools.chooseOTIOExportLocation()')
     }
 
-    importFile() {
-        return this.app.evalScript('$.OpenTimelineIOTools.selectOTIOFile()')
+    selectOpenTimelineFile() {
+        return this.app.evalScript('$.OpenTimelineIOTools.selectOTIOFileToImport()')
+    }
+
+    importSequence(path) {
+        console.log('fucking path: ', path)
+        return this.app.evalScript('$.OpenTimelineIOTools.importSequence()')
     }
 
     getTempFolder() {
@@ -94,6 +103,41 @@ export class OpenTimelineIO {
                             .then(function(python_output) {
                                 console.log('Python output: ', python_output)
                             })
+                    }.bind(this))
+            }.bind(this))
+    }
+
+    importOpenTimelineIO() {
+        return this.selectOpenTimelineFile()
+            .then(function(path) {
+                console.log('About to convert ', path, ' to FCP7XML')
+                let temp_path = this.generateTempPath()
+                temp_path = this.app.normalizePath(temp_path)
+
+                let python_args = [
+                    'convert-file',
+                    '--format',
+                    'fcp_xml',
+                    '--input',
+                    this.app.normalizePath(path),
+                    '--temp-file',
+                    this.app.normalizePath(temp_path)
+                ]
+
+                log.debug('Convert Python arguments before calling: ', python_args)
+
+                return this.app.runPython(python_args)
+                    .then(function(data) {
+                        if (data.stderr) {
+                            msg = data.stderr
+                            alert(msg)
+                            throw new Error(msg)
+                        }
+                        let temp_import_path = data.stdout
+                        temp_import_path = this.app.makeJSXPath(temp_import_path)
+                        log.debug('Temp Import Path: ', temp_import_path)
+                        return this.importSequence(temp_import_path)
+                        // Then take THAT output and import FinalCutProXML
                     }.bind(this))
             }.bind(this))
     }
