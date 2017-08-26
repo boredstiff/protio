@@ -1,7 +1,31 @@
+#include "json2.js"
+
 if(typeof($) === 'undefined')
-    $ = {};
+    $={};
 
 $.OpenTimelineIOTools = {
+
+    evalFile : function(path) {
+        $.writeln('fucking evalFile: ', path);
+        try {
+            $.writeln('Trying to evaluate: ', path);
+            $.evalFile(path);
+        } catch(err) {
+            alert("Eval File Exception: " + err);
+        }
+    },
+
+    evalFiles: function(jsxFolderPath) {
+        $.writeln('jsxFolderPath: ', jsxFolderPath);
+        var folder = new Folder(jsxFolderPath);
+        if (folder.exists) {
+            var jsxFiles = folder.getFiles("*.jsx");
+            for (var i = 0; i < jsxFiles.length; i++) {
+                var jsxFile = jsxFiles[i];
+                this.evalFile(jsxFile);
+            }
+        }
+    },
 
     exportActiveSequenceAsFCP7XML : function(path) {
 

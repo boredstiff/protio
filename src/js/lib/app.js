@@ -43,8 +43,9 @@ export class App {
     loadJSX() {
         log.info('Loading JSX')
         let cs = new CSInterface()
-        let extensionRoot = cs.getSystemPath(SystemPath.EXTENSION) + '/jsx/'
-        cs.evalScript('$.openTimelineIOTools.evalFiles("' + extensionRoot + '")')
+        let extensionRoot = cs.getSystemPath(SystemPath.EXTENSION) + '/jsx/opentimeline.jsx'
+        log.debug('extensionRoot: ', extensionRoot)
+        cs.evalScript('$.OpenTimelineIOTools.evalFile("' + extensionRoot + '")')
     }
 
     openFileInBrowser(url) {

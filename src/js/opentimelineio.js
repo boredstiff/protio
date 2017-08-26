@@ -9,7 +9,7 @@ log.setLevel(0)
 export class OpenTimelineIO {
     constructor(app) {
         log.info('starting to attach app')
-        this.app = new App()
+        this.app = app
         log.info('Attached the app')
     }
 
@@ -69,7 +69,7 @@ export class OpenTimelineIO {
         return this.chooseExportLocation()
             .then(function(data) {
                 // 'data' coming in should be a full path selected by the user.
-                // TODO: Some validation on this path in here. 
+                // TODO: Some validation on this path in here.
                 // Is it possible for the UI to hand back a folder path?
                 // Need to also populate with '.otio' if it doesn't exist.
                 let temp_path = this.generateTempPath()
@@ -103,6 +103,7 @@ export class OpenTimelineIO {
 
 $(document).ready(function() {
     console.log('document ready')
-    window.view = new OpenTimelineIO()
+    let application = new App()
+    window.view = new OpenTimelineIO(application)
     window.view.init()
 })
