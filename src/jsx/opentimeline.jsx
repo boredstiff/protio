@@ -1,6 +1,6 @@
 #include "json2.js"
 
-if(typeof($) === 'undefined')
+if(typeof($) == 'undefined')
     $={};
 
 $.OpenTimelineIOTools = {

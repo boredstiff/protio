@@ -40,6 +40,13 @@ export class App {
         return path
     }
 
+    makeJSXPath(path) {
+        log.debug('Inside makeJSXPath before running the replace: ', path)
+        path = path.replace(/[\\/]+/g, '\\\\');
+        log.debug('After running the replace: ', path)
+        return path
+    }
+
     loadJSX() {
         log.info('Loading JSX')
         let cs = new CSInterface()
@@ -64,8 +71,9 @@ export class App {
             console.log('reading...')
             let watch = true
             let data_function = function (data) {
-                if (data !== null) {
-                    let lines = data.split('\n').filter(function(n) { return n !== ''})
+                console.log('data inside data_function: ', data)
+                if (data != null) {
+                    let lines = data.split('\n').filter(function(n) { return n != ''})
                     console.log('pushing: ', lines)
                     console.log('array: ', _array)
                     _array.push.apply(_array, lines)
@@ -108,8 +116,7 @@ export class App {
                     console.log('stdout: going to read: ', stdout)
                     stdoutWatch = read(procID, 'stdout', stdoutLines, stdout)
                 } else {
-                    console.log(stdout)
-                    console.log('else on stdout')
+                    console.log('stdout inside of else: ', stdout)
                     window.cep.process.stdout(procID, function(line) { stdoutLines.push(line); console.log('stdOutLines: ', stdoutLines) })
                 }
 
@@ -117,36 +124,36 @@ export class App {
                     console.log('stderr: going to read: ', stderr)
                     stderrWatch = read(procID, 'stderr', stderrLines, stderr)
                 } else {
-                    console.log('else on stderr')
-                    window.cep.process.stderr(procID, function(line) { stderrLines.push(line) })
+                    console.log('stderr inside of else: ', stderr)
+                    window.cep.process.stderr(procID, function(line) { stderrLines.push(line); console.log('stdErrLines: ', stderrLines) })
                 }
 
-                function wait() {
-                    console.log('waiting')
-                    if (!proc.data) {
-                        setTimeout(wait, 100)
+                function respond() {
+                    console.log('inside else of wait')
+                    let data = {
+                        proc: proc,
+                        stdout: stdoutLines.join('\n'),
+                        stderr: stderrLines.join('\n')
+                    }
+                    if (stdoutWatch) { console.log('stdoutWatchStop'); stdoutWatch.stop() }
+                    if (stderrWatch) { console.log('stderrWatchStop'); stderrWatch.stop() }
+                    console.log('proc.err ', proc.err)
+                    if (proc.err === 0) {
+                        resolve(data)
                     } else {
-                        console.log('inside else of wait')
-                        let data = {
-                            proc: proc,
-                            stdout: stdoutLines.join('\n'),
-                            stderr: stderrLines.join('\n')
-                        }
-                        if (stdoutWatch) { console.log('stdoutWatchStop'); stdoutWatch.stop() }
-                        if (stderrWatch) { console.log('stderrWatchStop'); stderrWatch.stop() }
-                        console.log('proc.err ', proc.err)
-                        if (proc.err === 0) {
-                            console.log('should be resolving')
-                            console.log(resolve)
-                            console.log('data: ', data)
-                            resolve(data)
-                        } else {
-                            console.log('rejecting')
-                            reject(data)
-                        }
+                        reject(data)
                     }
                 }
-                window.cep.process.onquit(procID, wait)
+
+                function waitForStuff() {
+                    console.log('waiting')
+                    if (!proc.data) {
+                        setTimeout(waitForStuff, 1000)
+                    } else {
+                        respond()
+                    }
+                }
+                window.cep.process.onquit(procID, waitForStuff)
             } else {
                 console.log('else at end of runPython')
                 resolve('', '')

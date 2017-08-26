@@ -73,15 +73,13 @@ export class OpenTimelineIO {
                 // Is it possible for the UI to hand back a folder path?
                 // Need to also populate with '.otio' if it doesn't exist.
                 let temp_path = this.generateTempPath()
+                let jsx_temp_path = this.app.makeJSXPath(temp_path)
                 // Then export final cut pro xml with the temp path
-                return this.exportActiveSequenceAsFCP7XML(temp_path)
+                return this.exportActiveSequenceAsFCP7XML(jsx_temp_path)
                     .then(function() {
                         console.log('Sequence should be exported, calling python')
                         // Then run conversion on the temp path file to the user-selected
                         // output path
-                        console.log('before ')
-                        let t_path = this.app.normalizePath(temp_path)
-                        console.log('t_path: ', t_path)
 
                         let python_args = [
                             'export-file',
