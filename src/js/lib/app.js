@@ -73,8 +73,8 @@ export class App {
                 let os = cs.getOSInformation()
                 let find_python, bash, python
                 if (os.indexOf('Windows') >= 0) {
-                    // bash = "C:/Users/alexw/.babun/cygwin/bin/bash.exe"
-                    cmd = "C:/Windows/System32/cmd.exe"
+                    bash = "C:/Users/alexw/.babun/cygwin/bin/bash.exe"
+                    // cmd = "C:/Windows/System32/cmd.exe"
                     python = "C:/virtualenvs/otio/Scripts/python.exe"
                 }
                 // let pyArgs = [python, '-u'].concat(args)
@@ -82,7 +82,7 @@ export class App {
                 let _args = shellquote.quote(pyArgs)
                 console.log('Python command: ', _args)
                 // let fullArgs = [bash, '-lc', 'ls']
-                let fullArgs = [cmd].concat(_args)
+                let fullArgs = [bash, '-lc', python].concat(_args)
                 console.log('Full command: ', fullArgs)
                 let proc = window.cep.process.createProcess.apply(this, fullArgs)
                 let procID = proc.data
