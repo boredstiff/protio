@@ -16,7 +16,10 @@ System.config({
   map: {
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
+    "bootstrap": "npm:bootstrap@4.0.0-alpha.6",
     "core-js": "npm:core-js@1.2.7",
+    "devicons": "npm:devicons@1.8.0",
+    "font-awesome": "npm:font-awesome@4.7.0",
     "loglevel": "github:pimterry/loglevel@1.4.1",
     "path": "github:jspm/nodelibs-path@0.2.3",
     "process": "github:jspm/nodelibs-process@0.1.2",
@@ -48,6 +51,10 @@ System.config({
     "npm:babel-runtime@5.8.38": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:bootstrap@4.0.0-alpha.6": {
+      "jquery": "npm:jquery@3.2.1",
+      "tether": "github:HubSpot/tether@1.4.0"
+    },
     "npm:buffer@5.0.7": {
       "base64-js": "npm:base64-js@1.2.1",
       "ieee754": "npm:ieee754@1.1.8"
@@ -57,6 +64,9 @@ System.config({
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.2"
+    },
+    "npm:font-awesome@4.7.0": {
+      "css": "github:systemjs/plugin-css@0.1.35"
     },
     "npm:inherits@2.0.1": {
       "util": "github:jspm/nodelibs-util@0.1.0"

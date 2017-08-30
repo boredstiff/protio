@@ -24,16 +24,6 @@ export class OpenTimelineIO {
         }.bind(this))
     }
 
-    getActiveSequence() {
-        log.debug('Getting Active Sequence')
-        return this.app.evalScript('app.project.activeSequence')
-    }
-
-    getActiveSequenceName() {
-        log.debug('Getting Active Sequence Name')
-        return this.app.evalScript('app.project.activeSequence.name')
-    }
-
     exportActiveSequenceAsFCP7XML(path) {
         return this.app.evalScript('$.OpenTimelineIOTools.exportActiveSequenceAsFCP7XML("' + path + '")')
     }

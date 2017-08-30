@@ -7,6 +7,9 @@
     <meta http-equiv="Cache-control" content="no-cache">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
+    <!-- Compiled SASS > CSS -->
+    <link rel="stylesheet" href="./styles/opentimelineio.css">
+
     <!-- Must use modified version of jquery or we get require error -->
     <script src="./lib/jquery-1.9.1.js"></script>
     <script src="./lib/CSInterface.js"></script>
@@ -20,8 +23,13 @@
         System.import('opentimelineio')
     </script>
     <!-- GULP: ENDDEV -->
-
-    <button id="export-btn">export sequence as otio</button>
-    <button id="import-btn">import otio as sequence</button>
+    <div id="interpreter-layout">
+        <input class="input">
+        <input class="input">
+    </div>
+    <div id="otio-main-layout">
+        <button id="export-btn" class="btn">export sequence as otio</button>
+        <button id="import-btn" class="btn">import otio as sequence</button>
+    </div>
 </body>
 </html>
