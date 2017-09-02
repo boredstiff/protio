@@ -9,6 +9,9 @@ import * as shellquote from 'shell-quote'
 // Debugging
 log.setLevel(0)
 
+/**
+ * The main application class.
+ */
 export class App {
     constructor() {
         // log.debug('Building application')
@@ -25,6 +28,10 @@ export class App {
         this.pythonScriptPath = [this.extensionPath, 'python', 'premiere-opentimelineio.py'].join('/').replace('\\', '/')
     }
 
+    /**
+     * Perform a csInterface evalScript as a Promise.
+     * @param {string} command - An Extendscript command to perform. 
+     */
     evalScript(command) {
         log.debug('Evalscript command: ', command)
         return new Promise(function(resolve, reject) {
@@ -93,6 +100,7 @@ export class App {
                 let cs = new CSInterface()
                 let os = cs.getOSInformation()
                 let find_python, bash, python
+                // TODO (Alex): Hit this up. 
                 if (os.indexOf('Windows') >= 0) {
                     bash = this.normalizePath("C:/Users/alexw/.babun/cygwin/bin/bash.exe")
                     // cmd = "C:/Windows/System32/cmd.exe"

@@ -6,6 +6,9 @@ import * as process from 'process'
 
 log.setLevel(0)
 
+/**
+ * The main OpenTimelineIO class
+ */
 export class OpenTimelineIO {
     constructor(app) {
         log.info('starting to attach app')

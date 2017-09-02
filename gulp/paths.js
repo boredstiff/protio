@@ -19,7 +19,6 @@ module.exports = {
     premiereDebug: appRoot + './.debug',
     devSymlinks: [
         appRoot + 'CSXS',
-        appRoot + 'fonts',
         appRoot + 'js',
         appRoot + 'jsx',
         appRoot + 'lib',

@@ -1,5 +1,5 @@
 {
-  "name": "premiere-otio",
+  "name": "protio",
   "version": "0.0.1",
   "description": "OpenTimelineIO Integration for Premiere Pro CC2017",
   "bugs": {
@@ -13,9 +13,11 @@
     "url": "http://github.com/alexwidener/premiere_pro_otio"
   },
   "devDependencies": {
+    "documentation": "5.2.2",
     "git-rev": "0.2.1",
     "gulp": "3.9.1",
     "gulp-changed": "3.1.0",
+    "gulp-documentation": "3.2.1",
     "gulp-eslint": "4.0.0",
     "gulp-git": "2.4.2",
     "gulp-notify": "3.0.0",
@@ -25,8 +27,8 @@
     "require-dir": "0.3.2",
     "run-sequence": "2.1.0",
     "shell-quote": "1.6.1",
-    "vinyl-paths": "2.1.0",
-    "vinyl-fs": "2.4.4"
+    "vinyl-fs": "2.4.4",
+    "vinyl-paths": "2.1.0"
   },
   "jspm": {
     "dependencies": {

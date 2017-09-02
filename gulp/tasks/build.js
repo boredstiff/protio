@@ -1,6 +1,7 @@
 var gulp = require('gulp')
 var git = require('gulp-git')
 var gitRev = require('git-rev')
+var gulpDocumentation = require('gulp-documentation')
 var runSequence = require('run-sequence')
 var changed = require('gulp-changed')
 var sass = require('gulp-sass')
@@ -21,6 +22,12 @@ gulp.task('build-sass', function() {
     gulp.src(paths.sass)
         .pipe(sass().on('error', notify.onError('Error: <%= error.message %>')))
         .pipe(gulp.dest(paths.outputRoot))
+})
+
+gulp.task('build-docs', function() {
+    return gulp.src('./src/js/**/*.js')
+        .pipe(gulpDocumentation('html'))
+        .pipe(gulp.dest('dist/docs'))
 })
 
 gulp.task('build-dev-copy-jspm-config', function() {
@@ -69,6 +76,7 @@ gulp.task('build-dev', function(callback) {
         [
             'build-css',
             'build-sass',
+            'build-docs',
             'build-dev-html',
             'build-dev-config',
             'build-premiere-debug',
