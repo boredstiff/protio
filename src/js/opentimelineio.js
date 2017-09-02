@@ -25,6 +25,10 @@ export class OpenTimelineIO {
         $('#import-btn').click(function() {
             this.importOpenTimelineIO()
         }.bind(this))
+
+        this.status_field = $('#status-field')
+        this.status_field.text('hello, world')
+
     }
 
     exportActiveSequenceAsFCP7XML(path) {
@@ -94,6 +98,9 @@ export class OpenTimelineIO {
                         log.debug('Export Python arguments before calling: ', python_args)
                         return this.app.runPython(python_args)
                             .then(function(python_output) {
+                                if (python_output.stderr) {
+
+                                }
                                 console.log('Python output: ', python_output)
                             })
                     }.bind(this))

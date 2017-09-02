@@ -5,6 +5,16 @@ help:
 	@echo "install - Install the built extension"
 	@echo "dev - Install in dev location"
 	@echo "docs - Generate documentation"
+	@echo "debug - Set the reg/plist keys for debugging a CEP extension"
+
+uname_S := None
+ifeq ($(OS),Windows_NT)
+	uname_S := Windows
+else:
+	uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+endif
+
+DIST_DIR := $(shell pwd)/dist
 
 clean: clean-build clean-gulp
 
@@ -14,6 +24,11 @@ clean-build:
 
 clean-gulp:
 	gulp clean 2>/dev/null || true
+
+ifneq ($(uname_S), Windows)
+debug:
+	defaults write com.adobe.CSXS.7 PlayerDebugMode 1
+endif
 
 _docs:
 	gulp docs
@@ -41,7 +56,7 @@ dev: clean
 else
 dev: clean
 	rm "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
-	ln -s $(shell pwd)/dist "/Library/Application Support/Adobe/CEP/extensions/protio"
+	ln -s $(DIST_DIR) "/Library/Application Support/Adobe/CEP/extensions/protio"
 	gulp watch
 endif
 
