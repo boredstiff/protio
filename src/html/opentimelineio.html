@@ -23,11 +23,19 @@
         System.import('opentimelineio')
     </script>
     <!-- GULP: ENDDEV -->
-    <div id="interpreter-layout">
-        <input class="input">
-        <input class="input">
+    <div class="row">
+        <div id="interpreter-layout">
+            <img id="terminal-icon" src="./img/terminal.png"/>
+            <input id="terminal-input" class="input"/>
+        </div>
     </div>
-    <div id="otio-main-layout">
+    <div class="row">
+        <div id="python-interpreter-layout">
+            <img id="python-icon" src="./img/python.png"/>
+            <input id="python-input" class="input"/>
+        </div>
+    </div>
+    <div class="row" id="otio-main-layout">
         <button id="export-btn" class="btn">export sequence as otio</button>
         <button id="import-btn" class="btn">import otio as sequence</button>
     </div>

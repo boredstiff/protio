@@ -21,6 +21,7 @@ module.exports = {
         appRoot + 'CSXS',
         appRoot + 'js',
         appRoot + 'jsx',
+        appRoot + 'img',
         appRoot + 'lib',
         appRoot + 'python',
         'jspm_packages'

@@ -27,8 +27,9 @@ export class OpenTimelineIO {
         }.bind(this))
 
         this.status_field = $('#status-field')
-        this.status_field.text('hello, world')
-
+        // For whatever reason, a textarea has a tab of empty space on initialization.
+        // Stupid web shit.
+        this.status_field.text('')
     }
 
     exportActiveSequenceAsFCP7XML(path) {
@@ -39,6 +40,10 @@ export class OpenTimelineIO {
         return this.app.evalScript('$.OpenTimelineIOTools.chooseOTIOExportLocation()')
     }
 
+    /**
+     *
+     * @returns {Promise}
+     */
     selectOpenTimelineFile() {
         return this.app.evalScript('$.OpenTimelineIOTools.selectOTIOFileToImport()')
     }
@@ -70,6 +75,13 @@ export class OpenTimelineIO {
         return path.join(folderPath, fileName)
     }
 
+    /**
+     * Export a Premiere Pro Sequence as an OpenTimelineIO file.
+     *
+     * This is done by exporting a FCP7XML file to a temporary location, then loading that file into OpenTimelineIO,
+     * running the adapter on it, and writing that out to disk.
+     * @returns {Promise|Promise.<TResult>}
+     */
     exportOpenTimelineIO() {
         // Get the export location
         return this.chooseExportLocation()
@@ -99,7 +111,7 @@ export class OpenTimelineIO {
                         return this.app.runPython(python_args)
                             .then(function(python_output) {
                                 if (python_output.stderr) {
-
+                                    this.status_field.text(python_output.stderr)
                                 }
                                 console.log('Python output: ', python_output)
                             })
@@ -107,9 +119,18 @@ export class OpenTimelineIO {
             }.bind(this))
     }
 
+    /**
+     * Import an OpenTimelineIO file into Premiere.
+     *
+     * This is handled by using the adapters provided by OpenTimelineIO, namely for the FCP7XML Adaoter. I take the
+     * given OTIO file, create an OTIO object, write it to FCP7XML in a temporary location, and import that into PPro.
+     * @returns {Promise|Promise.<TResult>}
+     */
     importOpenTimelineIO() {
         return this.selectOpenTimelineFile()
             .then(function(path) {
+                // Clear out the status field.
+                this.status_field.text('')
                 console.log('About to convert ', path, ' to FCP7XML')
                 let temp_path = this.generateTempPath()
                 temp_path = this.app.normalizePath(temp_path)
@@ -131,6 +152,7 @@ export class OpenTimelineIO {
                         if (data.stderr) {
                             msg = data.stderr
                             alert(msg)
+                            this.status_field.text(data.stderr)
                             throw new Error(msg)
                         }
                         let temp_import_path = data.stdout

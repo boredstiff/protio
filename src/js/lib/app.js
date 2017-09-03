@@ -3,8 +3,10 @@ console.log('starting app imports')
 import * as log from 'loglevel'
 import * as shellquote from 'shell-quote'
 
-// let vs = require('fs')
-// let path = require('path')
+import * as process from 'process'
+
+let fs = require('fs')
+let path = require('path')
 
 // Debugging
 log.setLevel(0)
@@ -26,6 +28,13 @@ export class App {
         this.extensionPath = cs.getSystemPath(SystemPath.EXTENSION)
         // This one should already be normalized.
         this.pythonScriptPath = [this.extensionPath, 'python', 'premiere-opentimelineio.py'].join('/').replace('\\', '/')
+        this.configuration = null
+
+        this.whereExecutable = this.normalizePath('C:/Windows/System32/where.exe')
+        log.info('this.whereExecutable: ', this.whereExecutable)
+
+        this.cmdExecutable = 'C:/Windows/System32/cmd.exe'
+        this.loadConfiguration()
     }
 
     /**
@@ -54,6 +63,91 @@ export class App {
         return path
     }
 
+    getHomeDir(username) {
+        let home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
+        return username ? path.resolve(path.dirname(home), username) : home
+    }
+
+    doesConfigExist(configPath) {
+        try {
+            fs.stat(configPath, function(err, stat) {
+                if (err === 'ENOENT') {
+                    return false
+                } else {
+                    return true
+                }
+            }.bind(this))
+        } catch(err) {
+            if (err.code === 'ENOENT') {
+                return false
+            }
+        }
+    }
+
+    tempRemoveFile(configPath) {
+        if (this.doesConfigExist(configPath)) {
+            fs.unlink(configPath)
+        }
+    }
+
+    readConfiguration(configPath) {
+        return fs.readFileSync(configPath)
+            .then(function(data) {
+                console.log('data in readConfiguration: ', data)
+            })
+    }
+
+    getDefaultConfigForOS() {
+        let cs = new CSInterface()
+        let osInfo = cs.getOSInformation()
+        let user_shell
+        console.log('osinfo: ', osInfo)
+        if (osInfo.startsWith('Windows')) {
+            console.log('starts with')
+            try {
+                let args = [this.cmdExecutable, 'where', 'bash']
+                console.log('args: ', args)
+                // ["C:/Windows/System32/where.exe", 'find']
+                // Try to get bash first
+                // let proc = window.cep.process.createProcess.apply(this, args)
+                // let procID = proc.id
+                return this.stream(args)
+                    .then(function(data) {
+                        console.log('data')
+                    }.bind(this))
+
+                console.log('proc: ', proc)
+            } catch(err) {
+                console.log('uh-oh')
+            }
+        }
+    }
+
+    writeConfiguration(configPath) {
+        let defaultConfig = this.getDefaultConfigForOS()
+        fs.writeFile(configPath, defaultConfig, 'utf8')
+        return defaultConfig
+    }
+
+    loadConfiguration() {
+        let home = this.getHomeDir()
+        console.log('homeDir: ', home)
+        let configPath = path.resolve(home, '.protio')
+        // Temporary deletion upon initialization. I don't want the file to actually exist if it does.
+        console.log('Should remove the file')
+        this.tempRemoveFile(configPath)
+        console.log('File should be gone')
+
+        let fileExists, loadedConfiguration
+        if (this.doesConfigExist(configPath)) {
+            log.debug('Configuration file exists')
+            this.configuration = this.readConfiguration(configPath)
+        } else {
+            log.debug('Configuration file does not exist')
+            this.configuration = this.writeConfiguration(configPath)
+        }
+    }
+
     loadJSX() {
         log.info('Loading JSX')
         let cs = new CSInterface()
@@ -72,6 +166,20 @@ export class App {
     }
 
     runPython(args, stdout, stderr) {
+        let python, bash
+        let cs = new CSInterface()
+        let os = cs.getOSInformation()
+        if (os.indexOf('Windows') >= 0) {
+            bash = this.normalizePath('C:/Windows/System32/cmd.exe')
+            python = this.normalizePath("C:/virtualenvs/otio/Scripts/python.exe")
+        }
+
+        let pythonArgs = [bash, python, '-u', this.pythonScriptPath].concat(args)
+
+        return this.stream(pythonArgs, stdout, stderr)
+    }
+
+    stream(args, stdout, stderr) {
         console.log('starting runPython')
 
         function read(procID, stream, _array, callback) {
@@ -97,23 +205,8 @@ export class App {
         return new Promise(function(resolve, reject) {
             if (window.cep) {
                 console.log('inside runPython promise')
-                let cs = new CSInterface()
-                let os = cs.getOSInformation()
-                let find_python, bash, python
-                // TODO (Alex): Hit this up. 
-                if (os.indexOf('Windows') >= 0) {
-                    bash = this.normalizePath("C:/Users/alexw/.babun/cygwin/bin/bash.exe")
-                    // cmd = "C:/Windows/System32/cmd.exe"
-                    python = this.normalizePath("C:/virtualenvs/otio/Scripts/python.exe")
-                }
-                // let pyArgs = [python, '-u'].concat(args)
-                let pyArgs = [python, '-u', this.pythonScriptPath].concat(args)
-                let _args = shellquote.quote(pyArgs)
-                console.log('Python command: ', _args)
-                // let fullArgs = [bash, '-lc', 'ls']
-                let fullArgs = [bash, '-lc'].concat(_args)
-                console.log('Full command: ', fullArgs)
-                let proc = window.cep.process.createProcess.apply(this, fullArgs)
+                console.log('args: ', args)
+                let proc = window.cep.process.createProcess.apply(this, args)
                 let procID = proc.data
                 console.log('procID: ', procID)
                 let stdoutLines = []
