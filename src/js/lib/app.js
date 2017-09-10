@@ -28,18 +28,20 @@ export class App {
         this.extensionPath = cs.getSystemPath(SystemPath.EXTENSION)
         // This one should already be normalized.
         this.pythonScriptPath = [this.extensionPath, 'python', 'premiere-opentimelineio.py'].join('/').replace('\\', '/')
-
         this.localConfigurationPath = path.resolve(this.extensionPath, '.protio')
-        this.localConfiguration = this.getConfiguration(this.localConfigurationPath)
+        // this.localConfiguration = this.getConfiguration(this.localConfigurationPath)
+        this.localConfiguration = {}
         this.userConfigurationPath = path.resolve(this.getHomeDir(), '.protio')
         this.userConfiguration = this.getConfiguration(this.userConfigurationPath)
         this.configuration = this.validateConfiguration(this.setUpConfiguration())
 
         this.terminal = this.configuration['terminal']
         // May need to set these up
-        this.terminal_args = this.configuration['terminal_args']
-        this.python_interpreter = this.configuration['python_interpreter']
-        this.python_args = this.configuration['python_args']
+        this.terminalArgs = this.configuration['terminal_args']
+        this.pythonInterpreter = this.configuration['python_interpreter']
+        this.pythonArgs = this.configuration['python_args']
+
+        log.info('configuration: ', this.configuration)
     }
 
     /**
@@ -47,11 +49,12 @@ export class App {
      * @param configuration
      * @returns {*}
      */
-    static validateConfiguration(configuration) {
+    validateConfiguration(configuration) {
         // Need to find a good schema validator, but all the ones on npm are shit. Just like everything on npm.
         let required_keys = ['terminal', 'terminal_args', 'python_interpreter', 'python_args']
-        for (let i = 0; i < required_keys.length(); i++) {
+        for (let i = 0; i < required_keys.length; i++) {
             if (!(configuration.hasOwnProperty(required_keys[i]))) {
+                log.error('Missing required key in configuration: ', required_keys[i])
                 throw new Error('Missing required key in configuration: ', required_keys[i])
             }
         }
@@ -69,6 +72,7 @@ export class App {
         let configuration = this.localConfiguration
         if (this.userConfiguration !== {})
             configuration = this.userConfiguration
+        log.info('setUpConfiguration: ', configuration)
         return configuration
     }
 
@@ -77,9 +81,9 @@ export class App {
             throw new Error('Unable to continue loading the configuration without a path.')
         }
         let data = {}
-
-        if (this.doesConfigExist(path))
+        if (this.doesConfigExist(path)) {
             data = JSON.parse(fs.readFileSync(path, 'utf8'))
+        }
         return data
     }
     /**
@@ -94,42 +98,50 @@ export class App {
         })
     }
 
-    static normalizePath(path) {
+    normalizePath(path) {
         log.debug('Inside normalizePath before running the replace: ', path)
         path = path.replace(/[\\/]+/g, '/');
         log.debug('After running the replace: ', path)
         return path
     }
 
-    static makeJSXPath(path) {
+    makeJSXPath(path) {
         log.debug('Inside makeJSXPath before running the replace: ', path)
         path = path.replace(/[\\/]+/g, '\\\\');
         log.debug('After running the replace: ', path)
         return path
     }
 
-    static getHomeDir(username) {
+    getHomeDir(username) {
         let home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
         return username ? path.resolve(path.dirname(home), username) : home
     }
 
     doesConfigExist(configPath) {
-        try {
-            fs.stat(configPath, function(err, stat) {
-                if (err === 'ENOENT') {
-                    return false
-                } else {
-                    return true
-                }
-            }.bind(this))
-        } catch(err) {
-            if (err.code === 'ENOENT') {
-                return false
-            }
-        }
+        return new Promise(function(resolve, reject) {
+            return fs.access(configPath)
+        })
+        // try {
+        //     // let normalized_path = this.normalizePath(configPath)
+        //     fs.stat(configPath, function(err, stat) {
+        //         log.info('FUCK')
+        //         if (err.code === 'ENOENT') {
+        //             log.error('File does not exist')
+        //             return false
+        //         } else {
+        //             log.info('File exists')
+        //             return true
+        //         }
+        //     }.bind(this))
+        // } catch(err) {
+        //     log.error('Error: ', err)
+        //     if (err.code === 'ENOENT') {
+        //         return false
+        //     }
+        // }
     }
 
-    static loadJSX() {
+    loadJSX() {
         log.info('Loading JSX')
         let cs = new CSInterface()
         let extensionRoot = cs.getSystemPath(SystemPath.EXTENSION) + '/jsx/opentimeline.jsx'
@@ -137,7 +149,7 @@ export class App {
         cs.evalScript('$.OpenTimelineIOTools.evalFile("' + extensionRoot + '")')
     }
 
-    static openFileInBrowser(url) {
+    openFileInBrowser(url) {
         log.debug('Opening file url in system browser: ', url)
         if (window.cep) {
             window.cep.process.createProcess('/usr/bin/open', url)
@@ -147,15 +159,8 @@ export class App {
     }
 
     runPython(args, stdout, stderr) {
-        let python, bash
-        let cs = new CSInterface()
-        let os = cs.getOSInformation()
-        if (os.indexOf('Windows') >= 0) {
-            bash = this.normalizePath('C:/Windows/System32/cmd.exe')
-            python = this.normalizePath("C:/virtualenvs/otio/Scripts/python.exe")
-        }
-
-        let pythonArgs = [bash, python, '-u', this.pythonScriptPath].concat(args)
+        let pythonArgs = [
+            this.terminal, this.terminalArgs, this.pythonInterpreter, '-u', this.pythonScriptPath].concat(args)
 
         return this.stream(pythonArgs, stdout, stderr)
     }
