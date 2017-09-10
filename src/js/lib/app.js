@@ -29,8 +29,7 @@ export class App {
         // This one should already be normalized.
         this.pythonScriptPath = [this.extensionPath, 'python', 'premiere-opentimelineio.py'].join('/').replace('\\', '/')
         this.localConfigurationPath = path.resolve(this.extensionPath, '.protio')
-        // this.localConfiguration = this.getConfiguration(this.localConfigurationPath)
-        this.localConfiguration = {}
+        this.localConfiguration = this.getConfiguration(this.localConfigurationPath)
         this.userConfigurationPath = path.resolve(this.getHomeDir(), '.protio')
         this.userConfiguration = this.getConfiguration(this.userConfigurationPath)
         this.configuration = this.validateConfiguration(this.setUpConfiguration())
@@ -76,6 +75,20 @@ export class App {
         return configuration
     }
 
+    /**
+     * Load the configuration. A configuration is stored as a JSON dictionary in one of two locations, and both
+     * locations will be given by the path variable. The two places that a configuration can be are
+     * 1 ) Inside of the extension, which means that this is a version of the CEP extension that is shipping with
+     *      a Python interpreter.
+     * 2 ) In the user home directory.
+     * In both cases, the file will be named .protio.
+     * If the file exists in location 1 and 2, location 2 will overwrite location 1.
+     * If the file exists in location 1 and not location 2, it will use that one.
+     * If the file exists in location 2 and not location 1, it will use that one.
+     * If the file does not exist, well then... Make one in location 2.
+     * @param path
+     * @returns {{}}
+     */
     getConfiguration(path) {
         if (path === null) {
             throw new Error('Unable to continue loading the configuration without a path.')
@@ -86,6 +99,7 @@ export class App {
         }
         return data
     }
+
     /**
      * Perform a csInterface evalScript as a Promise.
      * @param {string} command - An Extendscript command to perform.
@@ -98,6 +112,11 @@ export class App {
         })
     }
 
+    /**
+     * Set paths up to use forward slashes, replacing any path join messed up results.
+     * @param path
+     * @returns {*}
+     */
     normalizePath(path) {
         log.debug('Inside normalizePath before running the replace: ', path)
         path = path.replace(/[\\/]+/g, '/');
@@ -105,6 +124,12 @@ export class App {
         return path
     }
 
+    /**
+     * Extendscript takes paths with backward slashes, while the rest of the code needs to take paths with forward
+     * slashes... way to go, Adobe. Another great innovation.
+     * @param path
+     * @returns {*}
+     */
     makeJSXPath(path) {
         log.debug('Inside makeJSXPath before running the replace: ', path)
         path = path.replace(/[\\/]+/g, '\\\\');
@@ -112,33 +137,26 @@ export class App {
         return path
     }
 
+    /**
+     * Get the home directory for the current user (or the user name this is passed in)
+     * @param username
+     * @returns {*}
+     */
     getHomeDir(username) {
         let home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
         return username ? path.resolve(path.dirname(home), username) : home
     }
 
+    /**
+     * Check whether to see if the configuration file exists. If anything happens, I don't give a shit, it just doesn't
+     * exist, don't load it.
+     * @param configPath
+     * @returns {*}
+     */
     doesConfigExist(configPath) {
-        return new Promise(function(resolve, reject) {
-            return fs.access(configPath)
-        })
-        // try {
-        //     // let normalized_path = this.normalizePath(configPath)
-        //     fs.stat(configPath, function(err, stat) {
-        //         log.info('FUCK')
-        //         if (err.code === 'ENOENT') {
-        //             log.error('File does not exist')
-        //             return false
-        //         } else {
-        //             log.info('File exists')
-        //             return true
-        //         }
-        //     }.bind(this))
-        // } catch(err) {
-        //     log.error('Error: ', err)
-        //     if (err.code === 'ENOENT') {
-        //         return false
-        //     }
-        // }
+        try {
+            return fs.existsSync(configPath)
+        } catch (err) { return false }
     }
 
     loadJSX() {
