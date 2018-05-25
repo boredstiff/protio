@@ -39,11 +39,11 @@ docs: _docs
 release-docs: _docs
 
 deps:~
-	npm install
+	yarn install
 	jspm install
 
 build-dev:
-	gulp build-dev
+	gulp watch
 
 build:
 	gulp build-prod
@@ -52,7 +52,7 @@ ifeq ($(uname_S), Windows)
 dev: clean	
 	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" 2>/dev/null || true
 	cmd /c mklink /J "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" "$(shell cygpath -w $(DIST_DIR))"
-	gulp build-dev
+	gulp watch
 else
 dev: clean
 	rm "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
