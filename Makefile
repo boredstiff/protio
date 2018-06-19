@@ -27,7 +27,7 @@ clean-gulp:
 
 ifneq ($(uname_S), Windows)
 debug:
-	defaults write com.adobe.CSXS.7 PlayerDebugMode 1
+	defaults write com.adobe.CSXS.8 PlayerDebugMode 1
 endif
 
 _docs:
@@ -39,20 +39,37 @@ docs: _docs
 release-docs: _docs
 
 deps:~
-	npm install
+	yarn install
 	jspm install
 
 build-dev:
-	gulp build-dev
+	gulp watch
+
 
 build:
+ifneq ($(uname_S), Windows)
 	gulp build-prod
+	./bin/ZXPSignCmd -sign dist output/protio.zxp MyCert.p12 abc123
+else
+	gulp build-prod
+endif
+
+deploy:
+ifneq ($(uname_S), Windows)
+	rm "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
+	mkdir -p "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
+	cp output/protio.zxp "/Library/Application Support/Adobe/CEP/extensions/protio/protio.zxp"
+else
+	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\protio" 2>/dev/null || true
+	xcopy /EHK output/protio.zxp "%APPDATA%\\Adobe\\CEP\\extensions\\protio\\protio.zxp"
+endif
+
 
 ifeq ($(uname_S), Windows)
-dev: clean	
-	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" 2>/dev/null || true
-	cmd /c mklink /J "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" "$(shell cygpath -w $(DIST_DIR))"
-	gulp build-dev
+dev: clean
+	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\protio" 2>/dev/null || true
+	cmd /c mklink /J "%APPDATA%\\Adobe\\CEP\\extensions\\protio" "$(shell cygpath -w $(DIST_DIR))"
+	gulp watch
 else
 dev: clean
 	rm "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
@@ -62,3 +79,8 @@ endif
 
 uninstall:
 	cmd /c rmdir /Q "%APPDATA%\\Adobe\\CEP\\extensions\\premiere-otio" 2>/dev/null || true
+
+ifneq ($(uname_S), Windows)
+create-cert:
+	./bin/ZXPSignCmd -selfSignedCert US OR MyCompanyName MyPersonName abc123 MyCert.p12
+endif

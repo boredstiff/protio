@@ -6,6 +6,8 @@ module.exports = {
     root: appRoot,
     baseRoot: baseRoot,
     js: appRoot + 'js/**/*.js',
+    jsToBundle: appRoot + 'js/*.js',
+    jsToOutput: outputRoot + '/js',
     jsx: baseRoot + 'jsx/**/*.jsx',
     html: baseRoot + appRoot + 'html/*.html',
     css: appRoot + '**/*.css',
@@ -25,6 +27,14 @@ module.exports = {
         appRoot + 'lib',
         appRoot + 'python',
         'jspm_packages'
+    ],
+    prodCopy: [
+        appRoot + "CSXS/**.xml",
+        appRoot + "files/**/*.*",
+        appRoot + "img/**/*.*",
+        appRoot + "jsx/**.*",
+        appRoot + "lib/**.*",
+        appRoot + "python/**.py",
     ],
     devJSPMCopy: [
         'package.json',

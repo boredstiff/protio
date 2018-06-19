@@ -27,7 +27,7 @@
     "require-dir": "0.3.2",
     "run-sequence": "2.1.0",
     "shell-quote": "1.6.1",
-    "vinyl-fs": "2.4.4",
+    "vinyl-fs": "3.0.3",
     "vinyl-paths": "2.1.0"
   },
   "jspm": {

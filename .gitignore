@@ -47,3 +47,8 @@ jspm_packages
 # Other
 .DS_Store
 .premiere_refresh_trigger
+
+# Certificate files for Adobe
+*.p12
+# Output folder
+output/
