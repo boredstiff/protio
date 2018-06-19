@@ -63,7 +63,7 @@ Win: regedit >
 ```
 Mac: In the terminal, type: 
      defaults write com.adobe.CSXS.8 PlayerDebugMode 1
-     (The plist is also located at /Users/USERNAME/Library/Preferences/com.adobe.CSXS.6.plist)
+     (The plist is also located at /Users/USERNAME/Library/Preferences/com.adobe.CSXS.8.plist)
 ```
 
 This puts your Adobe apps into debug mode, and now you can open the application.
@@ -100,20 +100,16 @@ To build everything out into a deployable package, run
 make build
 ```
 
-and take the results of that build in `./dist/`
+This will make a folder called dist/ and a folder called output, and you want to take the built extension from the output
+folder and distribute that.
 
-It would put an unsigned extension ()in the locations specified above:
+As a note, the Makefile contains default fake data in the build step for the ZXPSignCmd. Fill this with information for
+you or your organization.
 
-```markdown
-"%APPDATA%\\Adobe\\CEP\\extensions\\protio"
-``` 
-
-and 
+Finally, you can run the
 
 ```markdown
-/Library/Application Support/Adobe/CEP/extensions/protio
+make deploy
 ```
 
-while doing the debug registry edit/com plist editing - this allowed us to have CI/CD without any trouble.
-
-
+step which will place the built .zxp in the output/ folder in the correct location for Premiere to find it.
