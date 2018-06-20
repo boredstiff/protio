@@ -72,8 +72,8 @@ dev: clean
 	gulp watch
 else
 dev: clean
-	rm "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
-	ln -s $(DIST_DIR) "/Library/Application Support/Adobe/CEP/extensions/protio"
+	rm -f "/Library/Application Support/Adobe/CEP/extensions/protio" 2>/dev/null || true
+	ln -s $(DIST_DIR)/protio "/Library/Application Support/Adobe/CEP/extensions/"
 	gulp watch
 endif
 
