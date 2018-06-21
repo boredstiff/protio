@@ -26,6 +26,11 @@ export class OpenTimelineIO {
             this.importOpenTimelineIO()
         }.bind(this))
 
+        $('#export-otioview-btn').click(function() {
+            this.exportOpenTimelineIO()
+                .then(this.openOtioview.bind(this))
+        }.bind(this))
+
         this.status_field = $('#status-field')
         // For whatever reason, a textarea has a tab of empty space on initialization.
         // Stupid web shit.
@@ -119,6 +124,10 @@ export class OpenTimelineIO {
             }.bind(this))
     }
 
+    openOtioview() {
+        console.log('Running OTIOView')
+    }
+
     /**
      * Import an OpenTimelineIO file into Premiere.
      *
@@ -126,6 +135,7 @@ export class OpenTimelineIO {
      * given OTIO file, create an OTIO object, write it to FCP7XML in a temporary location, and import that into PPro.
      * @returns {Promise|Promise.<TResult>}
      */
+
     importOpenTimelineIO() {
         return this.selectOpenTimelineFile()
             .then(function(path) {
