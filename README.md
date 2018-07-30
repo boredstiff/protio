@@ -2,7 +2,12 @@ Protio
 ========
 Premiere OpenTimelineIO extension. Pronounced "Pro-T-Oh".
 
-Allows you to import and export OpenTimelineIO sequences, and launch the 
+Allows you to import and export OpenTimelineIO sequences, and launch the otioview application.
+
+Contribution
+=============
+[Michael Nowakowski](https://github.com/pantsworth) - Helped a lot on the UI design
+
 
 Installation
 =============
@@ -12,11 +17,11 @@ Installation
  - gulp
  - jspm
  - make
- - On Windows, cygwin. Because why the fuck would you use cmd.
+ - On Windows, cygwin. cmd is not supported.
  
 ##### Runtime requirements:
 
- - Python 2.7/3.5+
+ - Python 2.7/3.6+
  
 
 ## Building For Dev:
@@ -69,7 +74,8 @@ Mac: In the terminal, type:
 This puts your Adobe apps into debug mode, and now you can open the application.
 
 While Gulp is running, you can update files and close and reopen the extension to test changes. At a studio that I used
-to work at, we had a Ctrl + R refresh working at some point, but an update eventually fucked up what allowed that to work.
+to work at, we had a Ctrl + R refresh working at some point, but an update eventually ruined what allowed that to work.
+It currently works intermittently and eventually stops working altogether.
 
 Additionally, you can now go to [localhost:6145](http://localhost:6145) and run the debugger.
 
