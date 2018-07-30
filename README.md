@@ -4,9 +4,9 @@ Premiere OpenTimelineIO extension. Pronounced "Pro-T-Oh".
 
 Allows you to import and export OpenTimelineIO sequences, and launch the otioview application.
 
-[Wide View](https://github.com/alexwidener/protio/raw/master/img/protio_wide_view.PNG)
+![Wide View](https://github.com/alexwidener/protio/raw/master/img/protio_wide_view.PNG)
 
-[Collapsed View](https://github.com/alexwidener/protio/raw/master/img/collapsed_view.PNG)
+![Collapsed View](https://github.com/alexwidener/protio/raw/master/img/collapsed_view.PNG)
 
 Contribution
 =============
