@@ -1,3 +1,64 @@
 body {
   background-color: $primary-bg;
+  min-width: 200px;
+  overflow-y: hidden;
 }
+
+.accordion {
+  background-color: transparent;
+  color: ghostwhite;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+
+  &:active, &:hover {
+      background-color: transparent;
+    }
+}
+
+.panel {
+  background-color: #363636;
+  display: none;
+  overflow: hidden;
+  padding-left: 1rem;
+  padding-right: 2rem;
+  padding-bottom: 1rem;
+}
+
+#status-field {
+  width: 95%;
+  margin-right: 5%;
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid transparent;
+  }
+}
+
+#dev-info-box {
+  background-color: #363636;
+}
+
+#github-text, #docs-text, #python-text, #terminal-text {
+  padding-bottom: 0.5rem;
+  color: dimgray;
+  margin-left: 20px;
+  width: 55%;
+  display: inline-block;
+
+  a {
+    color: dimgray;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+  &:hover {
+    color: dimgray;
+  }
+}
+

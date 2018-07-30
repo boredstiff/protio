@@ -30,6 +30,27 @@ export class OpenTimelineIO {
         // For whatever reason, a textarea has a tab of empty space on initialization.
         // Stupid web shit.
         this.status_field.text('')
+
+
+        let acc = document.getElementById("dev-info-panel")
+        acc.addEventListener("click", function() {
+            /* Toggle between adding and removing the "active" class,
+            to highlight the button that controls the panel */
+            this.classList.toggle("active")
+
+            /* Toggle between hiding and showing the active panel */
+            let panel = this.nextElementSibling
+            if (panel.style.display === "block") {
+                panel.style.display = "none"
+                this.textContent = ""
+                this.innerHTML = "&#x25B6 Dev Info"
+            } else {
+                panel.style.display = "block"
+                this.textContent = ""
+                this.innerHTML = "&#x25BC Dev Info"
+            }
+
+        });
     }
 
     exportActiveSequenceAsFCP7XML(path) {

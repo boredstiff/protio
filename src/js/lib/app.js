@@ -183,6 +183,12 @@ export class App {
         return this.stream(pythonArgs, stdout, stderr)
     }
 
+    openURL(url) {
+        log.debug("Opening url: ", url)
+        var csInterface = new CSInterface();
+        csInterface.openURLInDefaultBrowser(url);
+    }
+
     stream(args, stdout, stderr) {
         console.log('starting runPython')
 
