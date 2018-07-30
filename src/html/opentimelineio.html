@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hello, OpenTimelineIO</title>
+    <title>Protio</title>
 
     <meta http-equiv="Cache-control" content="no-cache">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
 
     <!-- Compiled SASS > CSS -->
     <link rel="stylesheet" href="./styles/opentimelineio.css">
-
+    <!-- TODO: Alex Figure out what I have to do to get this -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <!-- Must use modified version of jquery or we get require error -->
     <script src="./lib/jquery-1.9.1.js"></script>
     <script src="./lib/CSInterface.js"></script>
@@ -23,25 +24,58 @@
         System.import('opentimelineio')
     </script>
     <!-- GULP: ENDDEV -->
-    <div class="row">
-        <div id="interpreter-layout">
-            <img id="terminal-icon" src="./img/terminal.png"/>
-            <input id="terminal-input" class="input"/>
-        </div>
-    </div>
-    <div class="row">
-        <div id="python-interpreter-layout">
-            <img id="python-icon" src="./img/python.png"/>
-            <input id="python-input" class="input"/>
-        </div>
-    </div>
     <div class="row" id="otio-main-layout">
-        <button id="export-btn" class="btn">export sequence as otio</button>
-        <button id="import-btn" class="btn">import otio as sequence</button>
+        <button id="import-btn" class="btn">
+            <i class="fas fa-file-import"></i> Import OTIO
+        </button>
+        <button id="export-btn" class="btn">
+            <i class="fas fa-file-export"></i> Export OTIO
+        </button>
+        <button id="otioview-btn" class="btn">
+            <i class="fas fa-external-link-alt"></i> Open OTIOview
+        </button>
     </div>
-    <div id="status-field-layout">
-        <textarea id="status-field">
-        </textarea>
+    <div id="dev-info-box">
+        <button id="dev-info-panel" class="accordion">&#x25B6 Dev Info</button>
+        <div class="panel">
+            <div id="status-field-layout">
+                <textarea id="status-field" disabled="disabled" placeholder="Waiting..."></textarea>
+            </div>
+            <div class="row">
+                <div id="interpreter-layout">
+                    <img id="terminal-icon" src="./img/terminal.png"/>
+                    <div id="terminal-text">/c/dev/cygwin</div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="python-interpreter-layout">
+                    <img id="python-icon" src="./img/python.png"/>
+                    <div id="python-text">/c/dev/OpenTimelineIO/venv/bin/python36.exe</div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="github-link-layout">
+                    <div id="github-icon">
+                        <i class="fab fa-github" style="font-size: 20px"></i>
+                    </div>
+                    <div id="github-text">
+                        <a data-value="http://github.com/alexwidener/protio" onclick="view.app.openURL(this.dataset.value)">http://github.com/alexwidener/protio
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="docs-layout">
+                    <div id="docs-icon">
+                        <i class="fas fa-book" style="font-size: 20px"></i>
+                    </div>
+                    <div id="docs-text">
+                        <a data-value="http://github.com/alexwidener/protio" onclick="view.app.openURL(this.dataset.value)">http://readthedocs.io/alexwidener/protio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

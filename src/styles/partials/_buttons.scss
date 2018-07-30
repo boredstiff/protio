@@ -1,0 +1,17 @@
+.btn {
+  width: 200px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+
+  &:hover {
+    border: 1px solid whitesmoke;
+  }
+}
+
+@media only screen and (max-width:650px) {
+  .btn {
+    width: 100%;
+  }
+}

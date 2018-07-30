@@ -29,7 +29,7 @@
 				</Lifecycle>
 				<UI>
 					<Type>Panel</Type>
-					<Menu>OpenTimelineIO</Menu>
+					<Menu>Protio</Menu>
 					<Geometry>
 						<Size>
 							<Width>440</Width>

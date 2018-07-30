@@ -34,7 +34,6 @@
     "dependencies": {
       "bootstrap": "npm:bootstrap@4.0.0-alpha.6",
       "devicons": "npm:devicons@1.8.0",
-      "font-awesome": "npm:font-awesome@4.7.0",
       "loglevel": "github:pimterry/loglevel@1.4.1"
     },
     "devDependencies": {
@@ -45,5 +44,8 @@
       "process": "github:jspm/nodelibs-process@0.1.2",
       "shell-quote": "npm:shell-quote@1.6.1"
     }
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.2.0"
   }
 }
