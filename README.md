@@ -11,6 +11,7 @@ Allows you to import and export OpenTimelineIO sequences, and launch the otiovie
 Contribution
 =============
 [Michael Nowakowski](https://github.com/pantsworth) - Helped a lot on the UI design
+
 [Bruce Bullis](https://github.com/bbb999) - Insurmountable Premiere Wisdom
 
 Installation
